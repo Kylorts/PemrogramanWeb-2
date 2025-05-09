@@ -43,7 +43,6 @@
         }
 
         $conn->prepare("DELETE FROM member WHERE id_member = :id")->execute([':id' => $id]);
-        normalizeMemberIds();
     }
 
     function getAllMember(){
@@ -66,40 +65,9 @@
         $stmt = $conn->query($sql);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $nextId = ($row['max_id'] !== null) ? $row['max_id'] + 1 : 1;
-    
+        $conn->exec("ALTER TABLE member AUTO_INCREMENT = $nextId");
         return $nextId;
     }
-
-    function normalizeMemberIds(){
-        $conn = getConnection();
-        $conn->exec("SET FOREIGN_KEY_CHECKS = 0");
-    
-        $stmt = $conn->query("SELECT * FROM member ORDER BY id_member ASC");
-        $members = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-        $newId = 1;
-        foreach ($members as $member) {
-            $oldId = $member['id_member'];
-    
-            $updateStmtMember = $conn->prepare("UPDATE member SET id_member = :newId WHERE id_member = :oldId");
-            $updateStmtMember->execute([
-                ':newId' => $newId,
-                ':oldId' => $oldId
-            ]);
-
-            $updateStmtPinjam = $conn->prepare("UPDATE peminjaman SET id_member = :newId WHERE id_member = :oldId");
-            $updateStmtPinjam->execute([
-                ':newId' => $newId,
-                ':oldId' => $oldId
-            ]);
-    
-            $newId++;
-        }
-    
-        $conn->exec("ALTER TABLE member AUTO_INCREMENT = $newId");
-        $conn->exec("SET FOREIGN_KEY_CHECKS = 1");
-    }
-
 
     //bagian fungsi untuk buku
     function addBuku($data){
@@ -144,7 +112,6 @@
         }
 
         $conn->prepare("DELETE FROM buku WHERE id_buku = :id")->execute([':id' => $id]);
-        normalizeBukuIds();
     }
 
     function getAllBuku(){
@@ -167,40 +134,9 @@
         $stmt = $conn->query($sql);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $nextId = ($row['max_id'] !== null) ? $row['max_id'] + 1 : 1;
-    
+        $conn->exec("ALTER TABLE buku AUTO_INCREMENT = $nextId");
         return $nextId;
     }
-
-    function normalizeBukuIds(){
-        $conn = getConnection();
-        $conn->exec("SET FOREIGN_KEY_CHECKS = 0");
-    
-        $stmt = $conn->query("SELECT * FROM buku ORDER BY id_buku ASC");
-        $allBuku = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-        $newId = 1;
-        foreach ($allBuku as $buku) {
-            $oldId = $buku['id_buku'];
-    
-            $updateStmtBuku = $conn->prepare("UPDATE buku SET id_buku = :newId WHERE id_buku = :oldId");
-            $updateStmtBuku->execute([
-                ':newId' => $newId,
-                ':oldId' => $oldId
-            ]);
-
-            $updateStmtPinjam = $conn->prepare("UPDATE peminjaman SET id_buku = :newId WHERE id_member = :oldId");
-            $updateStmtPinjam->execute([
-                ':newId' => $newId,
-                ':oldId' => $oldId
-            ]);
-    
-            $newId++;
-        }
-    
-        $conn->exec("ALTER TABLE buku AUTO_INCREMENT = $newId");
-        $conn->exec("SET FOREIGN_KEY_CHECKS = 1");
-    }
-
 
     //bagian fungsi untuk peminjaman
     function addPeminjaman($data){
@@ -256,7 +192,6 @@
         $conn = getConnection();
         $stmt = $conn->prepare("DELETE FROM peminjaman WHERE id_peminjaman = :id");
         $stmt->execute([':id' => $id]);
-        normalizePeminjamanIds();
     }
 
     function getPeminjamanById($id) {
@@ -272,31 +207,7 @@
         $stmt = $conn->query($sql);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $nextId = ($row['max_id'] !== null) ? $row['max_id'] + 1 : 1;
-    
+        $conn->exec("ALTER TABLE peminjaman AUTO_INCREMENT = $nextId");
         return $nextId;
-    }
-
-    function normalizePeminjamanIds(){
-        $conn = getConnection();
-        $conn->exec("SET FOREIGN_KEY_CHECKS = 0");
-    
-        $stmt = $conn->query("SELECT * FROM peminjaman ORDER BY id_peminjaman ASC");
-        $allPeminjaman = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-        $newId = 1;
-        foreach ($allPeminjaman as $pinjam) {
-            $oldId = $pinjam['id_peminjaman'];
-    
-            $updateStmt = $conn->prepare("UPDATE peminjaman SET id_peminjaman = :newId WHERE id_buku = :oldId");
-            $updateStmt->execute([
-                ':newId' => $newId,
-                ':oldId' => $oldId
-            ]);
-    
-            $newId++;
-        }
-    
-        $conn->exec("ALTER TABLE peminjaman AUTO_INCREMENT = $newId");
-        $conn->exec("SET FOREIGN_KEY_CHECKS = 1");
     }
 ?>

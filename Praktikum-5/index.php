@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <title>Pinjam Online</title>
         <style>
             body {
                 font-family: sans-serif;
