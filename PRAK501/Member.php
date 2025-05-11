@@ -102,7 +102,7 @@
                         echo "<td>" . htmlspecialchars($member['tgl_terakhir_bayar']) . "</td>";
                         echo "<td>
                                 <a href='FormMember.php?id=" . $member['id_member'] . "' class='btn btn-green'>Edit</a>
-                                <a href='Member.php?hapus=" . $member['id_member'] . "' class='btn btn-red')'>Hapus</a>
+                                <a href='Member.php?hapus=" . $member['id_member'] . "' class='btn btn-red'>Hapus</a>
                               </td>";
                         echo "</tr>";
                     }
